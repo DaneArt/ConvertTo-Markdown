@@ -8,7 +8,7 @@ Function ConvertTo-Markdown {
     Converts a PowerShell object to a Markdown table.
 
     .Parameter InputObject 
-    The first three octets of an IP address
+    The PowerShell object to be converted
    
     .Example 
     ConvertTo-Markdown -InputObject (Get-Service)
