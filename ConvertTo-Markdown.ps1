@@ -8,7 +8,7 @@ Function ConvertTo-Markdown {
     Converts a PowerShell object to a Markdown table.
 
     .Parameter InputObject 
-    The PowerShell object to be converted
+    PowerShell object to be converted
    
     .Example 
     ConvertTo-Markdown -InputObject (Get-Service)
@@ -45,15 +45,20 @@ Function ConvertTo-Markdown {
         ForEach ($Object in $InputObject){
             $i ++
             if ($i -eq 1){
-                $Properties = $Object | Get-Member | Where-Object {$_.MemberType -eq "Property" -or $_.MemberType -eq "NoteProperty"}
-                [string]$Properties.Name
-                [string]($Properties | ForEach-Object {"-" * $_.Name.Length})
+                # List the properties of the object, doing so in this manner maintains the order
+                $Properties = $Object.PSObject.Properties | Select-Object -ExpandProperty "Name"
+                # Table headers
+                [string]$Properties
+                # Lines under table headers
+                [string]($Properties | ForEach-Object {"-" * $_.Length})
             }
             ForEach ($item in $Object){
                 [string](
                     $Properties | ForEach-Object {
-                        if ($item.($_.Name)){
-                            $item.($_.Name).ToString().Replace("`n","").Replace("`r","")
+                        if ($item.($_)){
+                            $item.($_).ToString().Replace("`n","").Replace("`r","")
+                        } else {
+                            " "
                         }
                     }
                 )
